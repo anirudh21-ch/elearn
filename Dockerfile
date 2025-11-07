@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# system deps for some libs
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV FLASK_APP=app.main:app
+ENV FLASK_RUN_HOST=0.0.0.0
+EXPOSE 5000
+
+CMD ["python", "-m", "app.main"]

@@ -1,0 +1,33 @@
+# Default values for elearn-chart
+replicaCount: 2
+
+image:
+  repository: elearn
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 5000
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+admin:
+  username: admin
+  password: admin  # Override via --set in production
+
+ingress:
+  enabled: false
+  # Example:
+  # hosts:
+  #   - host: elearn.example.com
+  #     paths:
+  #       - path: /
+  #         pathType: Prefix

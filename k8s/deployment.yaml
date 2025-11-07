@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elearn-app
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elearn-app
+  template:
+    metadata:
+      labels:
+        app: elearn-app
+    spec:
+      containers:
+      - name: web
+        image: elearn:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: PORT
+          value: "5000"
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: elearn-secrets
+              key: admin-username
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elearn-secrets
+              key: admin-password
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5

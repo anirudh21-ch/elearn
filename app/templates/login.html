@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Login</h2>
+<form id="loginForm">
+  <div class="mb-3">
+    <label class="form-label">Username</label>
+    <input class="form-control" name="username" />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Password</label>
+    <input type="password" class="form-control" name="password" />
+  </div>
+  <button class="btn btn-primary" onclick="submitForm(event)">Login</button>
+</form>
+<script>
+async function submitForm(e){
+  e.preventDefault();
+  const form = document.getElementById('loginForm');
+  const data = { username: form.username.value, password: form.password.value };
+  const res = await fetch('/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  const json = await res.json();
+  if (res.ok && json.access_token) {
+    localStorage.setItem('access_token', json.access_token);
+    alert('Login successful! Redirecting to profile...');
+    window.location.href = '/profile';
+  } else {
+    alert('Login failed: ' + (json.msg || 'Unknown error'));
+  }
+}
+</script>
+{% endblock %}

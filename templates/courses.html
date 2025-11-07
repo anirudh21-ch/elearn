@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Courses</h2>
+<div id="courses"></div>
+<hr/>
+<h3>Add course</h3>
+<form id="courseForm">
+  <div class="mb-3">
+    <input class="form-control" name="title" placeholder="Title" />
+  </div>
+  <div class="mb-3">
+    <textarea class="form-control" name="description" placeholder="Description"></textarea>
+  </div>
+  <button class="btn btn-primary">Add</button>
+</form>
+<script>
+async function load(){
+  const res = await fetch('/courses');
+  const list = await res.json();
+  document.getElementById('courses').innerText = JSON.stringify(list, null, 2);
+}
+document.getElementById('courseForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const f = e.target;
+  const data = { title: f.title.value, description: f.description.value };
+  const res = await fetch('/courses', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)});
+  const j = await res.json();
+  alert(JSON.stringify(j));
+  load();
+});
+load();
+</script>
+{% endblock %}

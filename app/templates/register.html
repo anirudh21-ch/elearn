@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Register</h2>
+<form id="registerForm">
+  <div class="mb-3">
+    <label class="form-label">Username</label>
+    <input class="form-control" name="username" />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Password</label>
+    <input type="password" class="form-control" name="password" />
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Role</label>
+    <select class="form-control" name="role">
+      <option value="student">Student</option>
+      <option value="teacher">Teacher</option>
+    </select>
+    <small class="form-text text-muted">Admin cannot be created via this form.</small>
+  </div>
+  <button class="btn btn-primary" onclick="submitForm(event)">Register</button>
+</form>
+<script>
+async function submitForm(e){
+  e.preventDefault();
+  const form = document.getElementById('registerForm');
+  const data = { username: form.username.value, password: form.password.value, role: form.role.value };
+  const res = await fetch('/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  const json = await res.json();
+  if (res.ok) {
+    // Auto-login after registration
+    const loginRes = await fetch('/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username: data.username, password: data.password}) });
+    const loginJson = await loginRes.json();
+    if (loginJson.access_token) {
+      localStorage.setItem('access_token', loginJson.access_token);
+      localStorage.setItem('user', JSON.stringify(loginJson.user));
+      window.location.href = '/profile';
+    }
+  } else {
+    alert('Error: ' + json.msg);
+  }
+}
+</script>
+{% endblock %}

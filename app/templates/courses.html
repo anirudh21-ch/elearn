@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mt-4">
+  <div class="col-md-10">
+    <h2>Courses</h2>
+    
+    <div id="coursesList" class="row mb-4">
+      <!-- Courses will be loaded here -->
+    </div>
+
+    <hr/>
+    
+    <div id="createCourseSection" style="display: none;">
+      <h4>Create New Course</h4>
+      <form id="courseForm" class="card p-4">
+        <div class="mb-3">
+          <label class="form-label">Course Title</label>
+          <input class="form-control" name="title" placeholder="Enter course title" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description" placeholder="Enter course description" rows="4"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Course</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('access_token');
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+async function loadCourses() {
+  try {
+    const res = await fetch('/courses');
+    const courses = await res.json();
+    const container = document.getElementById('coursesList');
+    
+    if (!Array.isArray(courses) || courses.length === 0) {
+      container.innerHTML = '<div class="col-12"><p class="text-muted">No courses available yet.</p></div>';
+      return;
+    }
+    
+    container.innerHTML = courses.map(course => `
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">${course.title}</h5>
+            <p class="card-text">${course.description || 'No description'}</p>
+            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    document.getElementById('coursesList').innerHTML = `<div class="col-12"><p class="text-danger">Error loading courses: ${err.message}</p></div>`;
+  }
+}
+
+// Show create form only for teachers and admins
+if (token && user.role && (user.role === 'teacher' || user.role === 'admin')) {
+  document.getElementById('createCourseSection').style.display = 'block';
+  
+  document.getElementById('courseForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const data = { title: f.title.value, description: f.description.value };
+    
+    try {
+      const res = await fetch('/courses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (res.ok) {
+        const result = await res.json();
+        alert('Course created successfully!');
+        f.reset();
+        loadCourses();
+      } else {
+        const error = await res.json();
+        alert(`Error: ${error.msg || 'Failed to create course'}`);
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  });
+}
+
+// Load courses on page load
+loadCourses();
+</script>
+{% endblock %}
