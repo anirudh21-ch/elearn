@@ -264,8 +264,4 @@ kubectl logs <pod-name>
 
 MIT
 
-## Support
 
-For issues, questions, or contributions, open an issue on GitHub.
-
-# Workflow test - Fri Nov  7 19:13:44 IST 2025
