@@ -1,6 +1,15 @@
-# E-Learning Portal (Minimal)
+# E-Learning Portal with Complete DevOps Pipeline 🚀
 
-This is a minimal e-learning portal built with Flask + SQLite + JWT auth, with complete DevOps pipeline (Docker, GitHub Actions, Kubernetes, security scans).
+A full-stack e-learning platform showcasing real-world DevOps practices including containerization, CI/CD automation, Kubernetes orchestration, security scanning, and production-grade monitoring.
+
+## 🎯 **For Presentations & Demos**
+
+**📖 Complete Presentation Guide**: See [`PRESENTATION_DEMO.md`](PRESENTATION_DEMO.md) for step-by-step demo instructions  
+**⚡ Quick Commands**: See [`demo-commands.sh`](demo-commands.sh) for copy-paste ready commands  
+**🌐 Browser URLs**: See [`BROWSER_URLS.txt`](BROWSER_URLS.txt) for all access URLs and test queries  
+**✅ Checklist**: See [`PRESENTATION_CHECKLIST.md`](PRESENTATION_CHECKLIST.md) for pre-demo setup
+
+---
 
 ## Features
 
@@ -254,14 +263,6 @@ docker-compose build --no-cache
 
 ### k8s pod not starting
 
-```bash
-# Check pod logs
-kubectl describe pod <pod-name>
-kubectl logs <pod-name>
-```
 
-## License
-
-MIT
 
 
